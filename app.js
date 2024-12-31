@@ -40,9 +40,9 @@ function validateToken(req, res, next) {
     return res.status(403).send('Access Denied: Invalid or Expired Token');
 }
 
-// Middleware to log IP and restrict service usage
 function logAndRestrictService(req, res, next) {
-    const clientIp = req.ip || req.connection.remoteAddress;
+    const clientIp = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
+    const normalizedIp = clientIp === '::1' ? '127.0.0.1' : clientIp;
     const product = req.path.split('/').pop(); // Use the last part of the path as the product
     const now = Date.now();
 
@@ -58,27 +58,28 @@ function logAndRestrictService(req, res, next) {
     }
 
     // Initialize the client's record if not present
-    if (!ipData[clientIp]) {
-        ipData[clientIp] = {};
+    if (!ipData[normalizedIp]) {
+        ipData[normalizedIp] = {};
     }
 
     // Check if the client is restricted from using this product
-    if (ipData[clientIp][product] && ipData[clientIp][product] > now) {
-        const remainingTime = Math.ceil((ipData[clientIp][product] - now) / (1000 * 60 * 60 * 24));
+    if (ipData[normalizedIp][product] && ipData[normalizedIp][product] > now) {
+        const remainingTime = Math.ceil((ipData[normalizedIp][product] - now) / (1000 * 60 * 60 * 24));
         return res.status(403).send(`Access Denied: You can use this product again in ${remainingTime} days.`);
     }
 
     // Log the product usage and restrict for 3 days
-    ipData[clientIp][product] = now + 3 * 24 * 60 * 60 * 1000;
+    ipData[normalizedIp][product] = now + 3 * 24 * 60 * 60 * 1000;
     try {
         fs.writeFileSync(IP_FILE, JSON.stringify(ipData, null, 2));
     } catch (error) {
         console.error('Error writing to IP file:', error);
     }
 
-    console.log(`IP ${clientIp} accessed product: ${product}`);
+    console.log(`IP ${normalizedIp} accessed product: ${product}`);
     next();
 }
+
 
 
 // API to generate a token
