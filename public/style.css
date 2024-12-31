@@ -1,0 +1,106 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.notification-bar {
+    background-color: #daf8d7;
+    color: #215709;
+    padding: 10px;
+    text-align: center;
+    font-weight: 500;
+}
+
+footer {
+    background-color: #f8f9fa;
+}
+
+.important-links {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+.important-links li {
+margin: 5px 0; /* For vertical spacing on smaller screens */
+}
+
+.important-links li a {
+text-decoration: none;
+color: #007bff;
+}
+
+.important-links li a:hover {
+text-decoration: underline;
+}
+
+
+
+.service-box {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 300px; /* Ensures all boxes are of equal height */
+}
+
+.service-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-box img {
+    width: 120px; /* Fixed width for all images */
+    height: 120px; /* Fixed height for all images */
+    object-fit: cover; /* Ensures images maintain aspect ratio */
+    margin-bottom: 15px;
+    border-radius: 50%; /* Optional: makes images circular */
+    background-color: grey;
+}
+
+.service-box h5 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.service-box .btn {
+    margin-top: 10px;
+}
+
+.service-box li{
+    text-align: left;
+    justify-content: left;
+    margin-left: -50px;
+}
+
+.advertise-banner {
+    margin: 10px auto;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd; /* Optional: Add border around banners */
+    border-radius: 5px; /* Optional: Round the corners */
+    background-color: #ddd;
+}
+
+.top-nav img{
+    width: 120px; /* Fixed width for all images */
+    height: 120px; /* Fixed height for all images */
+    object-fit: cover; /* Ensures images maintain aspect ratio */
+    margin-bottom: 15px;
+    border-radius: 50%; /* Optional: makes images circular */
+    background-color: grey;
+}

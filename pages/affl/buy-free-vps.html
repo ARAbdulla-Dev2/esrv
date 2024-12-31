@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Services | ARAbdulla-Dev™</title>
+    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Notification Bar -->
+    <div class="notification-bar">
+        <i class="fa fa-whatsapp"></i> Join our WhatsApp Channel for updates and support! 
+        <a href="https://whatsapp.com/channel/0029Vag8s8gK0IBZ9BDhLW2l">Click here</a>.
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="../favicon.png" alt="Logo">
+                <span>E-Services</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5 text-center">
+        <h1>Subscribe and Follow</h1>
+        <p>Please complete the following steps to access your VPS details:</p>
+        <div class="d-grid gap-3 justify-content-center">
+            <button id="yt-button" class="btn btn-danger" onclick="handleClick('yt-button')">
+                <i class="fa fa-youtube"></i> Subscribe to YouTube
+            </button>
+            <button id="wa-button" class="btn btn-success" onclick="handleClick('wa-button')">
+                <i class="fa fa-whatsapp"></i> Follow WhatsApp Channel
+            </button>
+        </div>
+        <button id="access-vps" class="btn btn-primary mt-4" disabled>Access VPS Details</button>
+        <div id="vps-status" class="mt-4 text-warning" style="display: none;">Validating...</div>
+        <div id="vps-details" class="mt-4" style="display: none;">
+            <h2>Your Free VPS Details</h2>
+            <p id="vps-url"></p>
+            <p id="vps-password"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-4">
+        <div class="container">
+            <p>&copy; 2024 ARAbdulla-Dev™. All rights reserved.</p>
+            <ul class="important-links d-flex flex-column flex-lg-row justify-content-center">
+                <li class="me-3"><a href="#">Home</a></li>
+                <li class="me-3"><a href="#">Contact</a></li>
+                <li><a href="https://whatsapp.com/channel/0029Vag8s8gK0IBZ9BDhLW2l">Join Our WhatsApp Channel</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/976d6615ea.js" crossorigin="anonymous"></script>
+
+    <!-- Custom JS -->
+    <script>
+       // Track clicked buttons
+let clickedButtons = {
+    "yt-button": false,
+    "wa-button": false
+};
+
+// Handle button clicks
+function handleClick(buttonId) {
+    let url = "";
+
+    if (buttonId === "yt-button") {
+        url = "https://www.youtube.com/@ARAbdullaDev";
+    } else if (buttonId === "wa-button") {
+        url = "https://whatsapp.com/channel/0029Vag8s8gK0IBZ9BDhLW2l";
+    }
+
+    // Open the URL in a new tab/window
+    if (url) {
+        window.open(url, "_blank");
+    }
+
+    const button = document.getElementById(buttonId);
+    button.disabled = true; // Disable the clicked button
+    clickedButtons[buttonId] = true;
+
+    // Check if both buttons have been clicked
+    if (clickedButtons["yt-button"] && clickedButtons["wa-button"]) {
+        document.getElementById("access-vps").disabled = false;
+    }
+}
+
+        // Handle VPS access button click
+        document.getElementById("access-vps").addEventListener("click", async () => {
+            const statusElement = document.getElementById("vps-status");
+            const detailsElement = document.getElementById("vps-details");
+            const accessButton = document.getElementById("access-vps");
+
+            // Show validating message
+            statusElement.style.display = "block";
+            statusElement.textContent = "Validating...";
+            accessButton.disabled = true;
+
+            setTimeout(async () => {
+                try {
+                    // Fetch VPS details
+                    const response = await fetch('../api/free-vps');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Display VPS details
+                        statusElement.style.display = "none";
+                        detailsElement.style.display = "block";
+                        document.getElementById("vps-url").textContent = `URL: ${data.url}`;
+                        document.getElementById("vps-password").textContent = `Password: ${data.password}`;
+                    } else {
+                        // Out of stock message
+                        statusElement.style.display = "block";
+                        statusElement.textContent = data.message;
+                        accessButton.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error fetching VPS:', error);
+                    statusElement.textContent = "Error fetching VPS details. Please try again later.";
+                }
+            }, 5000); // Wait 5 seconds
+        });
+    </script>
+</body>
+
+</html>

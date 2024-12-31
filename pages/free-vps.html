@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Services | ARAbdulla-Dev™</title>
+    <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Notification Bar -->
+    <div class="notification-bar">
+        <i class="fa fa-whatsapp"></i> Join our WhatsApp Channel for updates and support! 
+        <a href="https://whatsapp.com/channel/0029Vag8s8gK0IBZ9BDhLW2l">Click here</a>.
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./favicon.png" alt="Logo">
+                <span>E-Services</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5 text-center top-nav">
+        <img src="free-vps.png" alt="Free VPS">
+        <h1>Free VPS</h1>
+        <p>Get your Free VPS today!</p>
+    </div>
+
+
+    <!-- E-Services Section -->
+<div class="container my-5">
+    <!-- Advertise Here - Top -->
+    <div class="text-center mb-4 advertise-banner">
+        <img src="advertise-here.jpg" alt="Advertise Here" class="img-fluid" style="max-width: 100%; height: auto;">
+    </div>
+
+    <h2 class="text-center mb-4">Free VPS Plans</h2>
+    <div class="row g-4">
+        <!-- Free VPS -->
+        <div class="col-md-4 col-lg-3">
+            <div class="service-box">
+                <img src="free-vps.png" alt="Free VPS">
+                <h5>Always Free VPS</h5>
+                <ul>
+                    <li>16GB RAM</li>
+                    <li>available lifetime</li>
+                    <li>100mbps network speed</li>
+                    <li>web based</li>
+                </ul>
+                <h5>Price: $0</h5>
+                <a href="/free-vps" class="btn btn-primary">Get Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advertise Here - Bottom -->
+    <div class="text-center mt-4 advertise-banner">
+        <img src="advertise-here.jpg" alt="Advertise Here" class="img-fluid" style="max-width: 100%; height: auto;">
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-4">
+        <div class="container">
+            <p>&copy; 2024 ARAbdulla-Dev™. All rights reserved.</p>
+            <ul class="important-links d-flex flex-column flex-lg-row justify-content-center">
+                <li class="me-3"><a href="#">Home</a></li>
+                <li class="me-3"><a href="#">Contact</a></li>
+                <li><a href="https://whatsapp.com/channel/0029Vag8s8gK0IBZ9BDhLW2l">Join Our WhatsApp Channel</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.btn-primary').addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/api/genToken')
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.token) {
+                        window.location.href = `/affl/buy-free-vps?token=${data.token}`;
+                    } else {
+                        alert('Failed to generate token. Please try again.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error generating token:', error);
+                    alert('Error generating token. Please check the console for more details.');
+                });
+        });
+    </script>
+    
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/976d6615ea.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
