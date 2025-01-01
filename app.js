@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const requestIp = require('request-ip');
 
 const app = express();
 const PORT = process.env.PORT || '3000';
@@ -12,6 +13,27 @@ app.use(express.static('public'));
 // Paths to data files
 const DATA_FILE = path.join(__dirname, 'data/data.json');
 const IP_FILE = path.join(__dirname, 'data/ip.json');
+
+let ipData = {};
+
+// Load existing IP data on server startup
+if (fs.existsSync(IP_FILE)) {
+    try {
+        const ipFileContent = fs.readFileSync(IP_FILE, 'utf8');
+        ipData = JSON.parse(ipFileContent || '{}');
+    } catch (error) {
+        console.error('Failed to load IP data:', error);
+    }
+}
+
+// Periodically save `ipData` to the file
+setInterval(() => {
+    try {
+        fs.writeFileSync(IP_FILE, JSON.stringify(ipData, null, 2));
+    } catch (error) {
+        console.error('Failed to save IP data:', error);
+    }
+}, 60 * 1000); // Save every minute
 
 // Load tokens from file
 let tokens = {};
@@ -41,21 +63,10 @@ function validateToken(req, res, next) {
 }
 
 function logAndRestrictService(req, res, next) {
-    const clientIp = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
+    const clientIp = requestIp.getClientIp(req) || 'unknown';
     const normalizedIp = clientIp === '::1' ? '127.0.0.1' : clientIp;
-    const product = req.path.split('/').pop(); // Use the last part of the path as the product
+    const product = req.path.split('/')[1] || 'default'; // Normalize product key
     const now = Date.now();
-
-    // Load existing IP data
-    let ipData = {};
-    if (fs.existsSync(IP_FILE)) {
-        try {
-            const ipFileContent = fs.readFileSync(IP_FILE, 'utf8');
-            ipData = JSON.parse(ipFileContent);
-        } catch (error) {
-            console.error('Error reading or parsing IP file:', error);
-        }
-    }
 
     // Initialize the client's record if not present
     if (!ipData[normalizedIp]) {
@@ -70,17 +81,10 @@ function logAndRestrictService(req, res, next) {
 
     // Log the product usage and restrict for 3 days
     ipData[normalizedIp][product] = now + 3 * 24 * 60 * 60 * 1000;
-    try {
-        fs.writeFileSync(IP_FILE, JSON.stringify(ipData, null, 2));
-    } catch (error) {
-        console.error('Error writing to IP file:', error);
-    }
-
     console.log(`IP ${normalizedIp} accessed product: ${product}`);
+
     next();
 }
-
-
 
 // API to generate a token
 app.get('/api/genToken', (req, res) => {
